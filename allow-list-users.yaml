@@ -1,0 +1,24 @@
+## NOTE: For this Identity Provider (IDP) the mappingmethod used is "lookup" and not "claim" so User identities are manually provisioned (base64 of user DN).
+## Under "attributes" the default values are used and work fine, as the "url" ldapsearch returns the email address required for authentication.
+
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: allowlist-users
+    mappingMethod: lookup
+    type: LDAP
+    ldap:
+      attributes:
+        id:
+        - dn
+        email:
+        - mail
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      insecure: false
+      url: ldaps://myldapserver:636/o=test.com?emailAddress?sub?(objectclass=person)"
