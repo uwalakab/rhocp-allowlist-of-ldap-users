@@ -21,9 +21,20 @@ ldapsearch -x -H ldaps://myldapserver.com:636 -b "<BASE-DN>" -D "<BIND-DN>" "(&(
 USEREMAIL=someone@test.com
 curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))"
 
+####  Example output from above command - so you can work out what the awl command will do
+DN: uid=123456,c=gb,ou=mycorp,o=base-dn.com
+        emailAddress: someone@test.com
+
 ## VALIDATE WITH CURL LDAP SEARCH WUTH BIND DN - PROMPT FOR PASSWORD (E.g. ldap://host:port/basedn?attribute?scope?filter )
 USEREMAIL=someone@test.com
 curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))" -u "uid=123456,c=gb,ou=mycorp,o=base-dn.com"
+
+## TO RETRIEVE THE EMAIL ADDRESS AS REGISTERED IN LDAP
+curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))"|awk '{IGNORECASE=1}/emailAddress: '"$USEREMAIL"'/{print $2}'
+
+## TO RETRIEVE THE DN (DISTINGUISHED NAME) IN LDAP - USE "DN: " STRING AS A DELIMITER WHERE REST OF THE STRING IS THE DN
+curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))"|awk '/^DN/{split($0, dn, "DN: "); print dn[2]}'
+
 
 ## CREATE NEW GROUP ADDING THE USER NAMED "Anyuser"
 oc adm groups new allowlist-admins-group anyuser@test.com
