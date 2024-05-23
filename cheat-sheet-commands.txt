@@ -1,0 +1,46 @@
+#### JUST A BUNCH OF REFEREMCE COMMANDS
+
+
+## SHOW THE IDENTITY PROVIDER
+oc get Oauth cluster -o yaml
+
+## EDIT  THE IDENTITY PROVIDER
+oc edit Oauth cluster -o yaml
+
+## SET THE HTPASSWD IDENTITY PROVIDER
+oc apply -f oauth-cluster.yaml
+
+## CHECK OPENSHIFT AUTHENTICATION PODS A RUNNING AFTER OAUTH IDP CHANGES
+oc get pods -n openshift-authentication
+
+## VALIDATE LDAP SEARCH STRING USING test mycorp LDAPS
+ldapsearch -x -H ldaps://myldapserver.com:636 -b "o=base-dn.com" "(&(objectclass=person)(emailAddress=someone@test.com))" uid
+ldapsearch -x -H ldaps://myldapserver.com:636 -b "<BASE-DN>" -D "<BIND-DN>" "(&(objectclass=person)(uid=123456))" -W
+
+## VALIDATE WITH CURL LDAP SEARCH (E.g. ldap://host:port/basedn?attribute?scope?filter )
+USEREMAIL=someone@test.com
+curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))"
+
+## VALIDATE WITH CURL LDAP SEARCH WUTH BIND DN - PROMPT FOR PASSWORD (E.g. ldap://host:port/basedn?attribute?scope?filter )
+USEREMAIL=someone@test.com
+curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))" -u "uid=123456,c=gb,ou=mycorp,o=base-dn.com"
+
+## CREATE NEW GROUP ADDING THE USER NAMED "Anyuser"
+oc adm groups new allowlist-admins-group anyuser@test.com
+
+## GIVE CLUSTER-ADMIN ROLE TO GROUP
+oc adm policy  add-cluster-role-to-group  cluster-admin  allowlist-admins-group
+
+## ADD / REMOVE USERS TO / FROM THE GROUP
+oc adm groups add-users allowlist-admins-group anyuser@test.com
+oc adm groups remove-users allowlist-admins-group anyuser@test.com
+
+## GET THE kubeadmin PASSWORD FROM THE SECRET
+## WARNING!!! MAKE SURE THERE IS A USER WITH CLUSTER ADMIN PERMISSIONS IF YOU DECIDE TO DELETE THIS !!!
+oc get secret -n kube-system kubeadmin
+oc extract secret/kubeadmin --to - -n kube-system
+oc extract secret/kubeadmin --to . -n kube-system
+
+## CHECK EXISTANCE OF USERS AND INDETITIES
+oc get users,identity
+oc get users; oc get identity
