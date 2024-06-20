@@ -21,7 +21,7 @@ ldapsearch -x -H ldaps://myldapserver.com:636 -b "<BASE-DN>" -D "<BIND-DN>" "(&(
 USEREMAIL=someone@test.com
 curl -ks "ldaps://myldapserver.com:636/o=base-dn.com?emailAddress?sub?(&(objectclass=person)(emailAddress=$USEREMAIL))"
 
-####  Example output from above command - so you can work out what the awl command will do
+####  Example output from above command - so you can work out what the awk command will do with the data outputed 
 DN: uid=123456,c=gb,ou=mycorp,o=base-dn.com
         emailAddress: someone@test.com
 
