@@ -1,5 +1,5 @@
 ## Written by B. Uwalaka (15/04/2024)
-## Script is for use with the Bluepages LDAPs and RHOCP (need to be logged into cluster as admin)
+## Script is for use with LDAPs and RHOCP (need to be logged into cluster as admin)
 ## What Red Hat don't explain in detail in their docs is that in order to manually provision an identity
 ## you need to base64 encode the DN of the user and remove the final character of that string and use that as the identity.
 
