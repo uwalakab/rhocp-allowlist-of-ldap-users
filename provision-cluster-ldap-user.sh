@@ -34,7 +34,7 @@ echo -e "\n\n  Found user : $USEREMAIL\n\n"
 ## Get the Distinguished Name (DN) of the user found
 DNSTRINGCLEAN=$(curl -ks "${LDAPHOST}:${LDAPPORT}/${LDAPBASEDN}?${LDAPATTRIB}?${LDAPDEPTH}?${LDAPFILTER}"|awk '/^DN/{split($0, dn, "DN: "); print dn[2]}')
 
-## Create the base64 encoded string for the user identity
+## Create the base64 encoded string for the user identity and remove the end character of the string (ref: Line 3 - Red Hat)
 DNSTRING=$(echo $DNSTRINGCLEAN|base64 -iw0)
 DNSTRING=${DNSTRING%?}
 
@@ -45,7 +45,7 @@ echo -e "\n\nIDP\t: ${IDPNAME}\nUSER\t: ${USEREMAIL}\nDN-CODE\t: ${DNSTRING}\nDN
 echo -e "\nProceed with these details?\n\n"
 read -p "(yes/no): " ANSWER
 
-## If yes create the user and their identity and mapping between the two. No problem if user already exists RHOCP users
+## If yes create the user and their identity and mapping between the two. No problem if the user already exists in RHOCP users
 if [[ "$ANSWER" = "yes" ]]
 then
     oc create user ${USEREMAIL}
