@@ -55,3 +55,4 @@ oc extract secret/kubeadmin --to . -n kube-system
 ## CHECK EXISTANCE OF USERS AND INDETITIES
 oc get users,identity
 oc get users; oc get identity
+oc get identity -ocustom-columns="USER:.user.name,DN:.providerUserName,PROVIDER:.providerName"
